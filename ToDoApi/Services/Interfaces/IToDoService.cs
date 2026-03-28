@@ -4,7 +4,7 @@ namespace ToDoApi.Services.Interfaces;
 
 public interface IToDoService
 {
-    Task<ToDoItem> AddTaskAsync(string title);
+    Task<ToDoItem> AddTaskAsync(CreateTaskRequest createTaskRequest);
 
     Task<List<ToDoItem>> GetAllTasksAsync();
 

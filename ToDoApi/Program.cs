@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Data;
+using ToDoApi.Models;
 using ToDoApi.Services;
 using ToDoApi.Services.Interfaces;
 
@@ -60,9 +61,10 @@ app.MapPut("/tasks/{id}/complete", async (Guid id, IToDoService service) =>
     }
 });
 
-app.MapPost("/tasks", async (string title, IToDoService service) =>
+app.MapPost("/tasks", async (CreateTaskRequest request, IToDoService service) =>
 {
-    return await service.AddTaskAsync(title);
+    var task = await service.AddTaskAsync(request);
+    return Results.Created($"/tasks/{task.Id}", task);
 });
 
 app.Run();
