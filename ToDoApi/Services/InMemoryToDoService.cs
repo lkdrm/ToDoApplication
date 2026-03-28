@@ -1,4 +1,5 @@
 ﻿using ToDoApi.Models;
+using ToDoApi.Services.Interfaces;
 
 namespace ToDoApi.Services;
 
@@ -14,5 +15,5 @@ public class InMemoryToDoService : IToDoService
         return newTask;
     }
 
-    public List<ToDoItem> GetAllTasks() => _tasks.Values.ToList();
+    public async Task<List<ToDoItem>> GetAllTasksAsync() => _tasks.Values.ToList();
 }
