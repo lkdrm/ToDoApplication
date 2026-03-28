@@ -1,12 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using ToDoApi.Data;
 using ToDoApi.Services;
 using ToDoApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IToDoService, InMemoryToDoService>();
+builder.Services.AddDbContext<ToDoContext>(options => options.UseInMemoryDatabase("ToDoList"));
+
+builder.Services.AddHostedService<EmailWorker>();
+
+builder.Services.AddScoped<IToDoService, DbToDoService>();
 builder.Services.AddScoped<IScopedService, ScopedService>();
 builder.Services.AddTransient<ITransientService, TransientService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+
 var app = builder.Build();
 
 app.MapGet("/tasks", async (IToDoService service, IAuditService audit) =>
@@ -26,9 +33,36 @@ app.MapGet("/lifetimes", (ITransientService transient, IScopedService scopedServ
         ScopedService2 = scopedService2.ServiceId
     };
 });
-app.MapPost("/tasks", (string title, IToDoService service) =>
+
+app.MapPut("/tasks/{id}/complete", async (Guid id, IToDoService service) =>
 {
-    return service.AddTask(title);
+    var task = await service.GetTaskByIdAsync(id);
+    if (task is null)
+    {
+        return Results.NotFound();
+    }
+
+    if (task.IsCompleted)
+    {
+        return Results.BadRequest("The task is completed");
+    }
+
+    task.IsCompleted = true;
+
+    try
+    {
+        await service.UpdateTaskAsync(task);
+        return Results.Ok(task);
+    }
+    catch (DbUpdateConcurrencyException)
+    {
+        return Results.Conflict("Update the page");
+    }
+});
+
+app.MapPost("/tasks", async (string title, IToDoService service) =>
+{
+    return await service.AddTaskAsync(title);
 });
 
 app.Run();
