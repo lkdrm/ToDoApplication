@@ -4,7 +4,11 @@ namespace ToDoApi.Services.Interfaces;
 
 public interface IToDoService
 {
-    ToDoItem AddTask(string title);
+    Task<ToDoItem> AddTaskAsync(string title);
 
     Task<List<ToDoItem>> GetAllTasksAsync();
+
+    Task UpdateTaskAsync(ToDoItem task);
+
+    Task<ToDoItem?> GetTaskByIdAsync(Guid id);
 }
