@@ -14,13 +14,15 @@ public class DbToDoService : IToDoService
         _toDoContext = toDoContext;
     }
 
-    public async Task<ToDoItem> AddTaskAsync(string title)
+    public async Task<ToDoItem> AddTaskAsync(CreateTaskRequest createTaskRequest)
     {
         var newTask = new ToDoItem
         {
             Id = Guid.NewGuid(),
-            Title = title,
-            IsCompleted = false
+            Title = createTaskRequest.Title,
+            IsCompleted = false,
+            Description = createTaskRequest.Description,
+            CreatedDate = createTaskRequest.DateTime
         };
 
         await _toDoContext.ToDoItems.AddAsync(newTask);
