@@ -22,7 +22,8 @@ public class DbToDoService : IToDoService
             Title = createTaskRequest.Title,
             IsCompleted = false,
             Description = createTaskRequest.Description,
-            CreatedDate = createTaskRequest.DateTime
+            CreatedDate = createTaskRequest.DateTime,
+            RowVersion = Guid.NewGuid().ToByteArray(),
         };
 
         await _toDoContext.ToDoItems.AddAsync(newTask);
