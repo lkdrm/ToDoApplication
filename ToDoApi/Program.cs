@@ -67,4 +67,5 @@ app.MapPost("/tasks", async (CreateTaskRequest request, IToDoService service) =>
     return Results.Created($"/tasks/{task.Id}", task);
 });
 
-app.Run();
+app.UseStaticFiles();
+await app.RunAsync();
