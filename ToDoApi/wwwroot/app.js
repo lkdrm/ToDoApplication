@@ -21,6 +21,7 @@ addTaskBtn.addEventListener('click', async () => {
         });
         await loadTasks();
         taskInput.value = "";
+        taskDescription.value = "";
         console.log(`Add new task ${taskInput.value}`);
     }
 });
@@ -30,13 +31,26 @@ async function loadTasks() {
     taskList.innerHTML = '';
     tasks.forEach((task) => {
         const li = document.createElement('li');
-        li.textContent = `${task.title} (${task.createdDate}) ${task.description}`;
-        const buttonDelete = document.createElement('button');
-        buttonDelete.textContent = "x";
+        const titleElement = document.createElement('strong');
+        titleElement.textContent = task.title;
+        titleElement.classList.add('task-title-text');
+        const dateElement = document.createElement('small');
+        dateElement.textContent = new Date(task.createdDate).toLocaleDateString();
+        dateElement.classList.add('task-date-text');
+        const descElement = document.createElement('p');
+        descElement.textContent = task.description || "No description";
+        descElement.classList.add('task-desc-text');
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('task-buttons-container');
         const buttonCompleted = document.createElement('button');
-        buttonCompleted.textContent = "✓";
+        buttonCompleted.textContent = "✓ Ready";
+        buttonCompleted.classList.add('task-btn', 'btn-ready');
+        const buttonDelete = document.createElement('button');
+        buttonDelete.textContent = "x Delete";
+        buttonDelete.classList.add('task-btn', 'btn-delete');
         if (task.isCompleted) {
-            li.style.textDecoration = "line-through";
+            li.classList.add('task-completed');
+            buttonCompleted.disabled = true;
         }
         buttonDelete.addEventListener('click', async () => {
             const valueToDelete = task.id;
@@ -57,8 +71,12 @@ async function loadTasks() {
             });
             await loadTasks();
         });
-        li.appendChild(buttonCompleted);
-        li.appendChild(buttonDelete);
+        li.appendChild(titleElement);
+        li.appendChild(dateElement);
+        li.appendChild(descElement);
+        buttonsContainer.appendChild(buttonCompleted);
+        buttonsContainer.appendChild(buttonDelete);
+        li.appendChild(buttonsContainer);
         taskList.appendChild(li);
     });
 }
