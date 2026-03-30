@@ -1,7 +1,9 @@
-console.log("Hello from TypeScript!");
+console.log("Start server!");
 
 const taskInput = document.getElementById('taskTitle') as HTMLInputElement;
+taskInput.addEventListener('input', validInput);
 const taskDescription = document.getElementById('taskDescription') as HTMLTextAreaElement;
+taskDescription.addEventListener('input', validInput);
 const addTaskBtn = document.getElementById('addTaskBtn') as HTMLButtonElement;
 const taskList = document.getElementById('taskList') as HTMLUListElement;
 await loadTasks();
@@ -33,6 +35,28 @@ addTaskBtn.addEventListener('click', async () => {
     }
 });
 
+function validInput() {
+    const isTitleEmpty = taskInput.value.trim() === "";
+    const isDescriptionEmpty = taskDescription.value.trim() === "";
+
+    addTaskBtn.disabled = isTitleEmpty || isDescriptionEmpty;
+
+    if (isTitleEmpty) {
+        taskInput.classList.add('input-error');
+    }
+    else {
+        taskInput.classList.remove('input-error');
+    }
+
+    if (isDescriptionEmpty) {
+        taskDescription.classList.add('input-error');
+    }
+    else {
+        taskDescription.classList.remove('input-error');
+    }
+}
+
+
 async function loadTasks() {
     const response = await fetch('/tasks');
     const tasks = await response.json();
@@ -63,6 +87,38 @@ async function loadTasks() {
         const buttonDelete = document.createElement('button');
         buttonDelete.textContent = "x Delete";
         buttonDelete.classList.add('task-btn', 'btn-delete');
+
+        const buttonEdit = document.createElement('button');
+        buttonEdit.textContent = "✏️ Edit";
+        buttonEdit.classList.add('task-btn', 'btn-edit');
+
+        buttonEdit.addEventListener('click', async () => {
+            const newTitle = prompt("Enter new title:", task.title);
+            if (newTitle === null) {
+
+            }
+            else if (newTitle.trim() === "") {
+                alert("Title cannot be empty!");
+                return;
+            }
+
+            const newDescription = prompt("Enter new description:", task.description);
+            if (newDescription !== null) {
+                task.description = newDescription;
+            }
+            const value = task.id;
+            if (newTitle !== null || newDescription !== null) {
+                await fetch(`/tasks/${value}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(task)
+                    });
+                await loadTasks();
+            }
+        });
 
         if (task.isCompleted) {
 
@@ -97,6 +153,7 @@ async function loadTasks() {
         li.appendChild(descElement);
         buttonsContainer.appendChild(buttonCompleted);
         buttonsContainer.appendChild(buttonDelete);
+        buttonsContainer.appendChild(buttonEdit);
         li.appendChild(buttonsContainer);
 
         taskList.appendChild(li);

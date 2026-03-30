@@ -147,6 +147,10 @@ body {
     color: white;
 }
 
+.btn-edit {
+    background-color: #ffcc00;
+}
+
 .task-completed .task-title-text,
 .task-completed .task-desc-text {
     text-decoration: line-through;
@@ -156,4 +160,15 @@ body {
 .task-completed .btn-ready {
     opacity: 0.4;
     cursor: default;
+}
+
+.input-error {
+    border: 2px solid #ff5252 !important;
+}
+
+.save-btn:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+    transform: scale(1) !important;
 }
