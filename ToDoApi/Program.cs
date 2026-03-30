@@ -35,7 +35,7 @@ app.MapGet("/lifetimes", (ITransientService transient, IScopedService scopedServ
     };
 });
 
-app.MapPut("/tasks/{id}/complete", async (Guid id, IToDoService service) =>
+app.MapPut("/tasks/{id}", async (Guid id, ToDoItem toDoItem, IToDoService service) =>
 {
     var task = await service.GetTaskByIdAsync(id);
     if (task is null)
@@ -43,15 +43,9 @@ app.MapPut("/tasks/{id}/complete", async (Guid id, IToDoService service) =>
         return Results.NotFound();
     }
 
-    if (task.IsCompleted)
-    {
-        return Results.BadRequest("The task is completed");
-    }
-
-    task.IsCompleted = true;
-
     try
     {
+        task.IsCompleted = toDoItem.IsCompleted;
         await service.UpdateTaskAsync(task);
         return Results.Ok(task);
     }
@@ -65,6 +59,19 @@ app.MapPost("/tasks", async (CreateTaskRequest request, IToDoService service) =>
 {
     var task = await service.AddTaskAsync(request);
     return Results.Created($"/tasks/{task.Id}", task);
+});
+
+app.MapDelete("/tasks/{id}", async (Guid id, IToDoService service) =>
+{
+    var isDeleted = await service.DeleteTaskAsync(id);
+    if (isDeleted)
+    {
+        return Results.Ok();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
 });
 
 app.UseStaticFiles();

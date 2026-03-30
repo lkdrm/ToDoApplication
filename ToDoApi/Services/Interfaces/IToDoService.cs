@@ -10,5 +10,7 @@ public interface IToDoService
 
     Task UpdateTaskAsync(ToDoItem task);
 
+    Task<bool> DeleteTaskAsync(Guid taskId);
+
     Task<ToDoItem?> GetTaskByIdAsync(Guid id);
 }

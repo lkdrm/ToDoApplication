@@ -32,6 +32,21 @@ public class DbToDoService : IToDoService
         return newTask;
     }
 
+    public async Task<bool> DeleteTaskAsync(Guid taskId)
+    {
+        var task = await _toDoContext.ToDoItems.FindAsync(taskId);
+
+        if (task == null)
+        {
+            return false;
+        }
+
+        _toDoContext.ToDoItems.Remove(task);
+        await _toDoContext.SaveChangesAsync();
+
+        return true;
+    }
+
     public async Task<List<ToDoItem>> GetAllTasksAsync() => await _toDoContext.ToDoItems.ToListAsync();
 
     public async Task<ToDoItem> GetTaskByIdAsync(Guid id) => await _toDoContext.ToDoItems?.FirstOrDefaultAsync(task => task.Id == id);
