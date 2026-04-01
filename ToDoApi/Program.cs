@@ -6,7 +6,7 @@ using ToDoApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ToDoContext>(options => options.UseInMemoryDatabase("ToDoList"));
+builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlite("Data Source=todoList.db"));
 
 builder.Services.AddHostedService<EmailWorker>();
 
@@ -45,6 +45,8 @@ app.MapPut("/tasks/{id}", async (Guid id, ToDoItem toDoItem, IToDoService servic
 
     try
     {
+        task.Title = toDoItem.Title;
+        task.Description = toDoItem.Description;
         task.IsCompleted = toDoItem.IsCompleted;
         await service.UpdateTaskAsync(task);
         return Results.Ok(task);
@@ -74,5 +76,6 @@ app.MapDelete("/tasks/{id}", async (Guid id, IToDoService service) =>
     }
 });
 
+app.UseDefaultFiles();
 app.UseStaticFiles();
 await app.RunAsync();

@@ -9,6 +9,5 @@ public record ToDoItem
     public bool IsCompleted { get; set; }
     public string Description { get; set; }
     public DateTime CreatedDate { get; set; }
-    [Timestamp]
     public byte[] RowVersion { get; set; }
 }
