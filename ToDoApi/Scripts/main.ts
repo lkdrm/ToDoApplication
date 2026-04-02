@@ -7,7 +7,40 @@ async function startApp() {
     taskDescription.addEventListener('input', validInput);
     const addTaskBtn = document.getElementById('addTaskBtn') as HTMLButtonElement;
     const taskList = document.getElementById('taskList') as HTMLUListElement;
+
+    let currentFilter: 'all' | 'active' | 'completed' = 'all';
+
+    const filterAllBtn = document.getElementById('filterAll') as HTMLButtonElement;
+    const filterActiveBtn = document.getElementById('filterActive') as HTMLButtonElement;
+    const filterCompletedBtn = document.getElementById('filterCompleted') as HTMLButtonElement;
+
     await loadTasks();
+
+    function setFilter(filterName: 'all' | 'active' | 'completed') {
+        currentFilter = filterName;
+
+        filterAllBtn.classList.remove('active-filter');
+        filterActiveBtn.classList.remove('active-filter');
+        filterCompletedBtn.classList.remove('active-filter');
+
+        if (filterName === 'all') {
+            filterAllBtn.classList.add('active-filter');
+        }
+
+        if (filterName === 'active') {
+            filterActiveBtn.classList.add('active-filter');
+        }
+
+        if (filterName === 'completed') {
+            filterCompletedBtn.classList.add('active-filter');
+        }
+
+        loadTasks();
+    }
+
+    filterAllBtn.addEventListener('click', () => setFilter('all'));
+    filterActiveBtn.addEventListener('click', () => setFilter('active'));
+    filterCompletedBtn.addEventListener('click', () => setFilter('completed'));
 
     addTaskBtn.addEventListener('click', async () => {
         const text = taskInput.value;
@@ -33,6 +66,7 @@ async function startApp() {
             taskInput.value = "";
             taskDescription.value = "";
             console.log(`Add new task ${taskInput.value}`);
+            validInput();
         }
     });
 
@@ -60,7 +94,15 @@ async function startApp() {
 
     async function loadTasks() {
         const response = await fetch('/tasks');
-        const tasks = await response.json();
+        let tasks = await response.json();
+
+        if (currentFilter === 'active') {
+            tasks = tasks.filter((task: any) => !task.isCompleted);
+        }
+        else if (currentFilter === 'completed') {
+            tasks = tasks.filter((task: any) => task.isCompleted);
+        }
+
         taskList.innerHTML = '';
 
         tasks.forEach((task: any) => {
