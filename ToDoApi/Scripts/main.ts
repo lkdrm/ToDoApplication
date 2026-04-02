@@ -107,6 +107,7 @@ async function startApp() {
 
         tasks.forEach((task: any) => {
             const li = document.createElement('li');
+            li.classList.add('task-animate-in');
 
             const titleElement = document.createElement('strong');
             titleElement.textContent = task.title;
