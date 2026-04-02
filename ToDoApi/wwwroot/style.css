@@ -172,3 +172,33 @@ body {
     cursor: not-allowed;
     transform: scale(1) !important;
 }
+
+.filters-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.filter-btn {
+    background-color: transparent;
+    color: #888;
+    border: 2px solid #7c8cd9;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+        background-color: rgba(124, 140, 217, 0.2);
+        color: white;
+ }
+
+.active-filter {
+    background-color: #7c8cd9;
+    color: white;
+    border-color: #7c8cd9;
+}
