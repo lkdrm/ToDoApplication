@@ -35,7 +35,7 @@ body {
 }
 
 .inner-box {
-    background-color: white;
+    background-color: #1e1e38;
     width: 100%;
     border-radius: 18px;
     padding: 15px;
@@ -44,33 +44,55 @@ body {
 
 .labels {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
 }
 
 .label-item {
     color: #b0b0b0;
     font-size: 11px;
     font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.labels .label-item:last-child {
+    font-weight: 400;
+    color: #888;
+    font-size: 10px;
 }
 
 .input-field {
     width: 100%;
-    border: none;
+    background-color: #2b2b52;
+    color: white;
+    border: 1px solid #7c8cd9;
+    border-radius: 10px;
     outline: none;
-    padding: 5px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
 }
+
+    .input-field:focus {
+        border-color: #00ffff;
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+    }
+
+    .input-field::placeholder {
+        color: #888;
+    }
 
 .title-input {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    margin-bottom: 10px;
 }
 
 .desc-input {
     font-size: 14px;
-    color: #666;
-    height: 60px;
+    height: 80px;
     resize: none;
 }
 
@@ -83,6 +105,44 @@ body {
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .save-btn:disabled {
+        background-color: #555;
+        color: #888;
+        cursor: not-allowed;
+        transform: scale(1) !important;
+    }
+
+.filters-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.filter-btn {
+    background-color: transparent;
+    color: #888;
+    border: 2px solid #7c8cd9;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .filter-btn:hover {
+        background-color: rgba(124, 140, 217, 0.2);
+        color: white;
+    }
+
+.active-filter {
+    background-color: #7c8cd9;
+    color: white;
+    border-color: #7c8cd9;
 }
 
 .task-list {
@@ -99,6 +159,7 @@ body {
         margin-bottom: 15px;
         display: flex;
         flex-direction: column;
+        transition: all 0.3s ease;
     }
 
 .task-title-text {
@@ -125,6 +186,7 @@ body {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    margin-top: 15px;
 }
 
 .task-btn {
@@ -134,7 +196,7 @@ body {
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: none !important;
+    transition: all 0.2s ease;
 }
 
 .btn-ready {
@@ -149,6 +211,7 @@ body {
 
 .btn-edit {
     background-color: #ffcc00;
+    color: #212141;
 }
 
 .task-completed .task-title-text,
@@ -162,45 +225,9 @@ body {
     cursor: default;
 }
 
+
 .input-error {
     border: 2px solid #ff5252 !important;
-}
-
-.save-btn:disabled {
-    background-color: #555;
-    color: #888;
-    cursor: not-allowed;
-    transform: scale(1) !important;
-}
-
-.filters-container {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 30px;
-}
-
-.filter-btn {
-    background-color: transparent;
-    color: #888;
-    border: 2px solid #7c8cd9;
-    padding: 8px 18px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-        background-color: rgba(124, 140, 217, 0.2);
-        color: white;
- }
-
-.active-filter {
-    background-color: #7c8cd9;
-    color: white;
-    border-color: #7c8cd9;
 }
 
 @keyframes slideIn {
@@ -219,6 +246,62 @@ body {
     animation: slideIn 0.4s ease-out forwards;
 }
 
-.task-list li {
+.edit-inline-input {
+    width: 100%;
+    background-color: #1e1e38;
+    color: white !important;
+    border: 1px solid #7c8cd9;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
     transition: all 0.3s ease;
+}
+
+    .edit-inline-input:focus {
+        border-color: #00ffff;
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+        outline: none;
+    }
+
+.btn-save-mode {
+    background-color: #00ffff !important;
+    color: #212141 !important;
+}
+
+textarea.edit-inline-input,
+textarea.desc-input {
+    background-color: #1e1e38 !important;
+    color: white !important;
+    border: 1px solid #7c8cd9;
+}
+
+.save-btn:not(:disabled):hover {
+    background-color: #33ffff;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-ready:not(:disabled):hover {
+    background-color: #33ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-delete:hover {
+    background-color: #ff3333;
+    box-shadow: 0 0 10px rgba(255, 82, 82, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-edit:hover {
+    background-color: #ffdb4d;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+    transform: scale(1.05);
+}
+
+.btn-save-mode:hover {
+    background-color: #33ffff !important;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transform: scale(1.05);
 }

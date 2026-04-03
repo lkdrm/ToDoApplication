@@ -103,36 +103,50 @@ async function startApp() {
             const buttonEdit = document.createElement('button');
             buttonEdit.textContent = "✏️ Edit";
             buttonEdit.classList.add('task-btn', 'btn-edit');
+            let isEditing = false;
             buttonEdit.addEventListener('click', async () => {
-                debugger;
-                const newTitle = prompt("Enter new title:", task.title);
-                if (newTitle === null) {
-                    return;
+                if (!isEditing) {
+                    isEditing = true;
+                    const editTitleInput = document.createElement('input');
+                    editTitleInput.type = 'text';
+                    editTitleInput.value = task.title;
+                    editTitleInput.classList.add('input-field', 'desc-input', 'edit-inline-input');
+                    const editDescInput = document.createElement('textarea');
+                    editDescInput.value = task.description;
+                    editDescInput.classList.add('input-field', 'title-input', 'edit-inline-input');
+                    li.replaceChild(editTitleInput, titleElement);
+                    li.replaceChild(editDescInput, descElement);
+                    buttonEdit.textContent = "💾 Save";
                 }
-                else if (newTitle.trim() === '' || newTitle.trim() === "") {
-                    alert("Title cannot be empty!");
-                    return;
+                else {
+                    const currentTitleInput = li.querySelector('input');
+                    const currentDescInput = li.querySelector('textarea');
+                    const newTitle = currentTitleInput.value;
+                    const newDescription = currentDescInput.value;
+                    if (newTitle.trim() === "") {
+                        alert("Title cannot be empty!");
+                        currentTitleInput.classList.add('input-error');
+                        return;
+                    }
+                    if (newDescription.trim() === "") {
+                        alert("Description cannot be empty!");
+                        currentDescInput.classList.add('input-error');
+                        return;
+                    }
+                    task.title = newTitle;
+                    task.description = newDescription;
+                    buttonEdit.textContent = "⏳ Saving...";
+                    buttonEdit.disabled = true;
+                    const value = task.id;
+                    await fetch(`/tasks/${value}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(task)
+                    });
+                    await loadTasks();
                 }
-                const newDescription = prompt("Enter new description:", task.description);
-                if (newDescription === null) {
-                    return;
-                }
-                else if (newDescription.trim() === '' || newDescription.trim() === "") {
-                    console.log("Im here");
-                    alert("Description cannot be empty!");
-                    return;
-                }
-                task.title = newTitle;
-                task.description = newDescription;
-                const value = task.id;
-                await fetch(`/tasks/${value}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(task)
-                });
-                await loadTasks();
             });
             if (task.isCompleted) {
                 li.classList.add('task-completed');
